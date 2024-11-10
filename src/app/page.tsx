@@ -1,9 +1,13 @@
-import Image from "next/image";
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return (
-    <div>
-      Hola Mundo
-    </div>
-  );
+  return redirect('/productos')
 }
+
+// export default function Home() {
+//   return (
+//     <div>
+//       Prueba
+//     </div>
+//   );
+// }
