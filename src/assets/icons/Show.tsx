@@ -1,4 +1,4 @@
-import { IconProps } from '@/interface/icons'
+import { IconProps } from '@/interfaces/components'
 
 const Show = (props: IconProps) => {
   return (

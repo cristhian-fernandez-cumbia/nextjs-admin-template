@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import rootReducer from '@/redux/reducers/rootReducer';
-import { productApi, userApi } from '../apis';
+import { productApi, userApi, moduleApi } from '../apis';
 
 const persistConfig = {
   key: 'root',
@@ -22,6 +22,7 @@ const store = configureStore({
     }).concat(
       productApi.middleware,
       userApi.middleware,
+      moduleApi.middleware
     ),
 });
 

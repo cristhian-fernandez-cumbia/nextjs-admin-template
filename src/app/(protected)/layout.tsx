@@ -8,7 +8,7 @@ const layout = ({children}: {children: React.ReactElement}) => {
       <div className='hidden lg:block w-80 h-full xl:fixed'>
         <SiderbarMenu />
       </div>
-      <div className='w-full xl:ml-80'>
+      <div className='w-full xl:ml-72'>
         <Navbar />
         <div className='px-6 bg-white dark:bg-background'>
           {children}
