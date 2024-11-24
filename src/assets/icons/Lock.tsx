@@ -1,7 +1,4 @@
-
-
-
-import { IconProps } from '@/interface'
+import { IconProps } from '@/interfaces/components'
 
 const Lock = (props: IconProps) => {
   return (

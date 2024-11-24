@@ -15,6 +15,7 @@ import {
   selectFavoritesProducts,
 } from '@/redux/selectors/productSelectors';
 import { Product } from '@/interfaces/product';
+import Breadcrumbs from '@/components/breadcrumbs/Breadcrumbs';
 
 const ProductosPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -54,6 +55,7 @@ const ProductosPage = () => {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
+      <Breadcrumbs />
       <h1 className="text-4xl font-bold text-center mb-8">Lista de Productos</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-4">
