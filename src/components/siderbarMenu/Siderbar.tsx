@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Module } from '@/interfaces/module';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +10,10 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import Button from '../button/Button';
 import { signOut } from 'next-auth/react';
 import { Logout } from '@/assets/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { selectIsCollapsed, toggleCollapseMenu } from '@/redux/slices/sidebarSlice';
+import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
   user: { name: string; avatar: string };
@@ -20,27 +24,39 @@ const Sidebar: React.FC<SidebarProps> = ({ user, modules }) => {
   const [expandedModuleId, setExpandedModuleId] = useState<number | null>(null);
   const [selectedSubmoduleId, setSelectedSubmoduleId] = useState<number | null>(null);
   const [isDashboardSelected, setIsDashboardSelected] = useState<boolean>(true);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const isCollapsed = useSelector(selectIsCollapsed);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const matchSubmodule = modules.flatMap((module) => module.submodulos).find((submodule) => pathname === submodule.ruta);
+    if (matchSubmodule) {
+      setSelectedSubmoduleId(matchSubmodule.idsubmodulo);
+      setExpandedModuleId(matchSubmodule.idmodulo);
+      setIsDashboardSelected(false);
+    } else if (pathname === '/') {
+      setSelectedSubmoduleId(null);
+      setExpandedModuleId(null);
+      setIsDashboardSelected(true);
+    }
+  }, [pathname, modules]);
 
   const handleCloseClick = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     signOut();
   };
 
   const handleModuleToggle = (id: number) => {
     if (isCollapsed) {
-      setIsCollapsed(false);
+      dispatch(toggleCollapseMenu());
     } else {
       setExpandedModuleId((prev) => (prev === id ? null : id));
-      if (selectedSubmoduleId) {
-        setIsDashboardSelected(false);
-      }
+      setIsDashboardSelected(false);
     }
   };
 
   const handleSubmoduleSelect = (submoduleId: number) => {
     if (isCollapsed) {
-      setIsCollapsed(false);
+      dispatch(toggleCollapseMenu());
     }
     setSelectedSubmoduleId(submoduleId);
     setIsDashboardSelected(false);
@@ -48,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, modules }) => {
 
   const handleDashboardSelect = () => {
     if (isCollapsed) {
-      setIsCollapsed(false);
+      dispatch(toggleCollapseMenu());
     } else {
       setSelectedSubmoduleId(null);
       setExpandedModuleId(null);
@@ -57,13 +73,13 @@ const Sidebar: React.FC<SidebarProps> = ({ user, modules }) => {
   };
 
   const toggleCollapse = () => {
-    setIsCollapsed((prev) => !prev);
+    dispatch(toggleCollapseMenu());
   };
 
   return (
     <aside
-      className={`h-screen bg-gray-900 text-white flex flex-col shadow-lg transition-all duration-500 ease-in-out ${
-        isCollapsed ? 'w-16 overflow-hidden' : 'w-64'
+      className={`h-screen lg:h-[calc(100vh-60px)] bg-gray-900 text-white flex flex-col shadow-lg transition-all duration-500 ease-in-out ${
+        isCollapsed ? 'w-full lg:w-16 overflow-hidden' : 'w-full lg:w-64'
       }`}
     >
       <div className="flex items-center p-4 border-b border-gray-800 justify-between">
@@ -75,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, modules }) => {
             </div>
           </div>
         )}
-        <button onClick={toggleCollapse} className="text-gray-400">
+        <button onClick={toggleCollapse} className="text-gray-400 hidden lg:block">
           {isCollapsed ? <MenuIcon className="ml-1" /> : <KeyboardDoubleArrowLeftIcon className="-mr-3" />}
         </button>
       </div>
@@ -110,12 +126,12 @@ const Sidebar: React.FC<SidebarProps> = ({ user, modules }) => {
         )}
       </nav>
 
-      <div className="mt-auto">
+      <div className="mt-auto flex-shrink-0">
         <Button
           className="w-full text-gray-300 bg-ui-gray-light dark:bg-gray-600 rounded-none text-[15px] py-2 px-4 font-extrabold whitespace-nowrap mb-2  hover:text-white"
           onClick={handleCloseClick}
         >
-          <Logout className="mr-2 text-gray-300" fill={'gray'}/>
+          <Logout className="mr-2 text-gray-300" fill={'gray'} />
           {!isCollapsed && <span className="font-medium overflow-hidden">SALIR DE SESIÓN</span>}
         </Button>
       </div>

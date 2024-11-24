@@ -7,7 +7,7 @@ import { productApi, userApi, moduleApi } from '../apis';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['product', 'user'], 
+  whitelist: ['product', 'user', 'sidebar'], 
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
